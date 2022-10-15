@@ -69,7 +69,7 @@ class memoria:
         self.memoria.append(particion(3, 10, 410000))                                                   #Particion 2 de 60 kb para procesos pequeños
     
     def setProcesos(self):                                                                                                  #Cargamos todos los procesos en una lista auxiliar y los ordenamos por tiempo de arribo y tiempo de irrupcion
-        df = pd.read_csv('./procesos2.csv',index_col=0,header=0)      #Lectura de archivo csv con los procesos  #CAMBIAR RUTA Y HACERLO GENERAL
+        df = pd.read_csv('./procesos.csv',index_col=0,header=0)      #Lectura de archivo csv con los procesos  #CAMBIAR RUTA Y HACERLO GENERAL
         df=df.sort_values(['tiempo de arribo','tiempo de irrupcion'])  
         df=pd.DataFrame(df)
         for i in range(len(df)):
@@ -86,9 +86,12 @@ class memoria:
 
     def ordenSJF(self):
         if len(self.controlMultiprogramacion) > 0:
-            aux = self.controlMultiprogramacion.pop(0)                                  #Sacamos el primer proceso de la cola de control de multiprogramacion
-            self.controlMultiprogramacion.sort(key=lambda x: x.ti, reverse=False)       #Ordenamos la cola de control de multiprogramacion por tiempo de irrupcion
-            self.controlMultiprogramacion.insert(0,aux)                                 #Insertamos el proceso que sacamos al principio de la cola
+            if self.procesador.proceso == None:
+                self.controlMultiprogramacion.sort(key=lambda x: x.ti)
+            else:
+                aux = self.controlMultiprogramacion.pop(0)                                  #Sacamos el primer proceso de la cola de control de multiprogramacion
+                self.controlMultiprogramacion.sort(key=lambda x: x.ti, reverse=False)       #Ordenamos la cola de control de multiprogramacion por tiempo de irrupcion
+                self.controlMultiprogramacion.insert(0,aux)                                 #Insertamos el proceso que sacamos al principio de la cola
 
     def getParticion(self, proceso):
         for i in range(len(self.memoria)):
@@ -131,10 +134,11 @@ class memoria:
         #Tenemos que controlar que despues de ordenar todos los proceso a partir del segundo esten o en memoria o suspendidos 
         #Los primeros 3 pueden estar en memoria pero no es necesario que deban hacerlo
         #Excepto el primer proceso el resto puede estar suspendido 
-        for i in range(len(self.memoria)):  
-            if (self.memoria[i].proceso not in [proceso.id for proceso in self.controlMultiprogramacion[:3]])and (self.memoria[i].proceso != self.procesador.proceso):  
-                #[proceso.id for particion in self.controlMultiprogramacion[:3]]   
-                self.memoria[i].setParticion(None,"libre",0)                                                                                            
+        for i in range(len(self.memoria)):
+            if (self.memoria[i].proceso != None):
+                if (self.memoria[i].proceso.id not in [proceso.id for proceso in self.controlMultiprogramacion[:3]])and (self.memoria[i].proceso != self.procesador.proceso):  
+                    #[proceso.id for particion in self.controlMultiprogramacion[:3]]   
+                    self.memoria[i].setParticion(None,"libre",0)                                                                                            
        #Limpiamos la cola de suspendidos exceptuando las particiones que no es necesario mover a la cola de listos
 
     def reordenarSuspendidos(self):
