@@ -68,9 +68,9 @@ class memoria:
         return f"Memoria: {self.memoria}"
 
     def setParticiones(self): 
-        self.memoria.append(particion(1, 75, 100000))                                                  #Particion 0 de 250 kb para procesos grandes
-        self.memoria.append(particion(2, 25, 350000))                                                  #Particion 1 de 120 kb para procesos medianos
-        self.memoria.append(particion(3, 10, 410000))                                                  #Particion 2 de 60 kb para procesos pequeños
+        self.memoria.append(particion(1, 250, 100000))                                                  #Particion 0 de 250 kb para procesos grandes
+        self.memoria.append(particion(2, 120, 350000))                                                  #Particion 1 de 120 kb para procesos medianos
+        self.memoria.append(particion(3, 60, 410000))                                                  #Particion 2 de 60 kb para procesos pequeños
     
     def setProcesos(self):                                                                                                  #Cargamos todos los procesos en una lista auxiliar y los ordenamos por tiempo de arribo y tiempo de irrupcion
         try:
@@ -243,7 +243,7 @@ class memoria:
             self.tiempoActual += 1
 
 
-
-Memoria=memoria()
-Memoria.cicloPrincipal()
+if __name__ == "__main__":
+    Memoria=memoria()
+    Memoria.cicloPrincipal()
 
