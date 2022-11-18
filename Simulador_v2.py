@@ -1,4 +1,4 @@
-#Simulador de Asignación de Memoria y Planificación de procesos
+#Simulador de Asignación de Memoria y Planificación de proceso
 
 import pandas as pd
 import tkinter.filedialog as filedialog
@@ -85,7 +85,8 @@ class memoria:
                 df=df.head(10)
             for i in range(len(df)):
                 self.procesos.append(proceso(df.index[i],df.iat[i,0],df.iat[i,1],df.iat[i,2]))
-                print (self.procesos[i])
+                #print (self.procesos[i])
+            print(df)
         except pd.errors.EmptyDataError:
             print("El archivo esta vacio")
             quit()
@@ -186,32 +187,37 @@ class memoria:
     def printMemoria(self):
         if (self.nuevoProcesoB or self.listoProcesoB or self.finProcesoB):
             if self.nuevoProcesoB:
-                print("Nuevo proceso")
+                print("\nNuevo proceso")
             elif self.listoProcesoB:
-                print("Nuevo proceso listo")
+                print("\nNuevo proceso listo")
             elif self.finProcesoB:
-                print("Fin proceso")
+                print("\nFin proceso")
         
-            print("\n\nTiempo actual: ", self.tiempoActual)
+            print("\nTiempo actual: ", self.tiempoActual)
             if (self.procesador.proceso == None):
                 print("Estado del procesador: NULL (libre)")
             else:
                 print("Estado del procesador: Proceso ", self.procesador.proceso.id, " (tiempo restante: ", self.procesador.tiRestante, ")")
-            print("Tabla de Particiones")
-            # Imprimir la tabla de particiones con tabulaciones para hacerla legible
-            print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |".format('Id Particion','Direccion','Tamaño','Id Proceso','Fragmentación Interna'))
-            print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |".format('0','0','100','SO','-'))
-            for i in range(len(self.memoria)):
-                if (self.memoria[i].proceso == None):
-                    print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |".format(self.memoria[i].id,self.memoria[i].direccion,self.memoria[i].tamanho,'NULL','NULL'))
-                else:
-                    print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |".format(self.memoria[i].id, self.memoria[i].direccion, self.memoria[i].tamanho, self.memoria[i].proceso.id, self.memoria[i].fragInterna))
+            
             print("Cola de listos: ", [particion.proceso.id for particion in self.memoria if (particion.proceso != None) and (particion.proceso != self.procesador.proceso)])  #[proceso.id for proceso in self.controlMultiprogramacion]
             #print("Cola de multiprogramacion: ", [proceso.id for proceso in self.controlMultiprogramacion ] )
             print("Cola de suspendidos: ", [proceso.id for proceso in self.colaSuspendidos])    #[proceso.id for proceso in self.colaSuspendidos]
             print("Cola de nuevos: ", [proceso.id for proceso in self.colaNuevos])             #[proceso.id for proceso in self.colaNuevos]
+            print("Cola de terminados: ", self.colaTerminados)
+
             #Agregar un sleep o un input para que el usuario pueda ver el estado de la memoia
-            input("Presione enter para continuar...")
+                      
+            print("\nTabla de Particiones")
+            # Imprimir la tabla de particiones con tabulaciones para hacerla legible
+            print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<21} |".format('Id Particion','Direccion','Tamaño','Id Proceso','Fragmentación Interna'))
+            print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<21} |".format('0','0','100','SO','-'))
+            for i in range(len(self.memoria)):
+                if (self.memoria[i].proceso == None):
+                    print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<21} |".format(self.memoria[i].id,self.memoria[i].direccion,self.memoria[i].tamanho,'NULL','NULL'))
+                else:
+                    print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<21} |".format(self.memoria[i].id, self.memoria[i].direccion, self.memoria[i].tamanho, self.memoria[i].proceso.id, self.memoria[i].fragInterna))
+            
+            input("\nPresione enter para continuar...")  
 
 
 
