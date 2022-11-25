@@ -86,6 +86,7 @@ class memoria:
             for i in range(len(df)):
                 self.procesos.append(proceso(df.index[i],df.iat[i,0],df.iat[i,1],df.iat[i,2]))
                 #print (self.procesos[i])
+            print("\n   Datos del csv cargados correctamente\n")
             print(df)
         except pd.errors.EmptyDataError:
             print("El archivo esta vacio")
@@ -209,13 +210,13 @@ class memoria:
                       
             print("\nTabla de Particiones")
             # Imprimir la tabla de particiones con tabulaciones para hacerla legible
-            print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<21} |".format('Id Particion','Direccion','Tamaño','Id Proceso','Fragmentación Interna'))
-            print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<21} |".format('0','0','100','SO','-'))
+            print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<21} |".format('Id Particion','Direccion Inicio','Tamaño','Id Proceso','Fragmentación Interna'))
+            print ("| {:<15} | {:<16} | {:<15} | {:<15} | {:<21} |".format('0','0','100','SO','-'))
             for i in range(len(self.memoria)):
                 if (self.memoria[i].proceso == None):
-                    print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<21} |".format(self.memoria[i].id,self.memoria[i].direccion,self.memoria[i].tamanho,'NULL','NULL'))
+                    print ("| {:<15} | {:<16} | {:<15} | {:<15} | {:<21} |".format(self.memoria[i].id,self.memoria[i].direccion,self.memoria[i].tamanho,'NULL','NULL'))
                 else:
-                    print ("| {:<15} | {:<15} | {:<15} | {:<15} | {:<21} |".format(self.memoria[i].id, self.memoria[i].direccion, self.memoria[i].tamanho, self.memoria[i].proceso.id, self.memoria[i].fragInterna))
+                    print ("| {:<15} | {:<16} | {:<15} | {:<15} | {:<21} |".format(self.memoria[i].id, self.memoria[i].direccion, self.memoria[i].tamanho, self.memoria[i].proceso.id, self.memoria[i].fragInterna))
             
             input("\nPresione enter para continuar...")  
 
@@ -247,7 +248,8 @@ class memoria:
             self.reordenarSuspendidos()
             self.printMemoria()
             self.tiempoActual += 1
-
+        print("\nFinalizó la simulación\n")
+        input("\nPresione enter para cerrar...")  
 
 if __name__ == "__main__":
     Memoria=memoria()
