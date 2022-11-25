@@ -1,5 +1,4 @@
 #Simulador de Asignación de Memoria y Planificación de proceso
-
 import pandas as pd
 import tkinter.filedialog as filedialog
 
@@ -81,18 +80,24 @@ class memoria:
             #df = pd.read_csv('./procesos2.csv',index_col=0,header=0)      #Lectura de archivo csv con los procesos  #CAMBIAR RUTA Y HACERLO GENERAL  
             df=pd.DataFrame(df)
             if len(df) > 10:
-                print("Advertencia: El archivo de procesos no puede tener mas de 10 procesos, se tomaron en cuenta los primeros 10")
+                print("\nAdvertencia: El archivo de procesos no puede tener mas de 10 procesos, se tomaron en cuenta los primeros 10")
                 df=df.head(10)
             for i in range(len(df)):
-                self.procesos.append(proceso(df.index[i],df.iat[i,0],df.iat[i,1],df.iat[i,2]))
-                #print (self.procesos[i])
+                if df.iat[i,2] > 250:
+                    print("\nAdvertencia: El tamaño del proceso",df.iat[i,0],"es mayor a 250 kb, se obviara en la simulación")
+                    
+                else:
+                    self.procesos.append(proceso(df.index[i],df.iat[i,0],df.iat[i,1],df.iat[i,2]))
+                
             print("\n   Datos del csv cargados correctamente\n")
             print(df)
         except pd.errors.EmptyDataError:
             print("El archivo esta vacio")
+            input("\nPresione enter para cerrar...") 
             quit()
         except FileNotFoundError:
             print("No se selecciono ningun archivo")
+            input("\nPresione enter para cerrar...")
             quit()
 
     def cargaNuevos(self):
@@ -234,8 +239,6 @@ class memoria:
         self.cargaSuspendidos()
         self.printMemoria()
         self.tiempoActual += 1
-        # while (len(self.colaTerminados)+len(self.colaBloqueados)) != (len(self.procesos)):
-        #for i in range(50):
         while len(self.colaTerminados) != (len(self.procesos)):
             self.controlProcesador()
             self.cargaNuevos()
