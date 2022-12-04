@@ -82,9 +82,30 @@ class memoria:
             if len(df) > 10:
                 print("\nAdvertencia: El archivo de procesos no puede tener mas de 10 procesos, se tomaron en cuenta los primeros 10")
                 df=df.head(10)
+            elif len(df) < 1:
+                print("\nAdvertencia: El archivo de procesos no puede tener menos de 1 proceso")
+                input("\nPresione enter para cerrar...")
+                quit()
+
+            
+            if df.isnull().values.any():
+                print("\nAdvertencia: El archivo de procesos no puede tener valores nulos")
+                input("\nPresione enter para cerrar...")
+                quit()
+
+            
             for i in range(len(df)):
-                if df.iat[i,2] > 250:
-                    print("\nAdvertencia: El tamaño del proceso",df.iat[i,0],"es mayor a 250 kb, se obviara en la simulación")
+                if df.iat[i,0] < 0:
+                    print("\nAdvertencia: El tiempo de irrupcion del proceso",df.index[i],"es menor a 0, se obviara en la simulación")
+
+                elif df.iat[i,1] < 0:
+                    print("\nAdvertencia: El tiempo de arribo del proceso",df.index[i],"es menor a 0, se obviara en la simulación")
+
+                elif df.iat[i,2] > 250:
+                    print("\nAdvertencia: El tamaño del proceso",df.index[i],"es mayor a 250 kb, se obviara en la simulación")
+                
+                elif df.iat[i,2] < 0:
+                    print("\nAdvertencia: El tamaño del proceso",df.index[i],"es menor a 0, se obviara en la simulación")
                     
                 else:
                     self.procesos.append(proceso(df.index[i],df.iat[i,0],df.iat[i,1],df.iat[i,2]))
@@ -99,7 +120,10 @@ class memoria:
             print("No se selecciono ningun archivo")
             input("\nPresione enter para cerrar...")
             quit()
-
+        except pd.errors.ParserError:
+            print("Estructura de archivo incorrecto, verifique la cantidad de campos ingresados")
+            input("\nPresione enter para cerrar...")
+            quit()
     def cargaNuevos(self):
         self.nuevoProcesoB = False
         for i in range(len(self.procesos)):                   
@@ -113,7 +137,7 @@ class memoria:
     def ordenSJF(self):
         if len(self.controlMultiprogramacion) > 0:
             if self.procesador.proceso == None:
-                self.controlMultiprogramacion.sort(key=lambda x: x.ti)
+                self.controlMultiprogramacion.sort(key=lambda x: x.ti)   
             else:
                 aux = self.controlMultiprogramacion.pop(0)                                  #Sacamos el primer proceso de la cola de control de multiprogramacion
                 self.controlMultiprogramacion.sort(key=lambda x: x.ti, reverse=False)       #Ordenamos la cola de control de multiprogramacion por tiempo de irrupcion
